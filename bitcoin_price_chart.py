@@ -6,7 +6,7 @@ from time import time
 
 timerange = "30"
 interval = ""
-filename = timerange + "range_" + interval + "interval.json"
+filename = path.dirname(__file__) + "/" + timerange + "range_" + interval + "interval.json"
 if not path.isfile(filename) or (time() - path.getmtime(filename)) / 60 > 15:
     print("fetching")
     url = "https://bitcoincharts.com/charts/chart.json?m=bitstampUSD&SubmitButton=Draw&r={0}&i={1}".format(timerange,
