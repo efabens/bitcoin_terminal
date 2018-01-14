@@ -263,11 +263,11 @@ class Canvas(object):
         if y_axis:
             # add Y-axis
             for i in range(self.height):
-                res[i] = ['{:10.{decimals}f} | '.format(i * self._y_delta + self._ymin, decimals=x_axis_round)] + res[i]
+                res[i] = ['{:10,.{decimals}f} | '.format(i * self._y_delta + self._ymin, decimals=x_axis_round)] + res[i]
             ylbl = '({})'.format(y_label)
             ylbl_left = (10 - len(ylbl)) // 2
             ylbl_right = ylbl_left + len(ylbl) % 2
-            res += [['{:10.{decimals}f} |'.format(self.height * self._y_delta + self._ymin, decimals=x_axis_round)],
+            res += [['{:10,.{decimals}f} |'.format(self.height * self._y_delta + self._ymin, decimals=x_axis_round)],
                     [' ' * (ylbl_left) + ylbl + ' ' * (ylbl_right) + ' ^']]
 
         if x_axis:
