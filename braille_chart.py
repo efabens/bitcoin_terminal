@@ -27,8 +27,9 @@ fig.width = 80
 fig.height = 10
 fig.set_x_limits(min_=0, max_=len(weighted))
 fig.set_y_limits(min_=min(weighted), max_=max(weighted))
+fig.y_label = "USD/BTC"
 fig.color_mode = 'byte'
-fig.plot([i for i in range(len(weighted))], weighted, lc=2, label="test")
+fig.plot([i for i in range(len(weighted))], weighted, lc=2, label="Bitcoin price")
 print(fig.show(legend=True))
 print('Data provided by bitcoincharts [{0}]'.format("http://bitcoincharts.com/"))
 print('Last Updated {:.2} minutes ago'.format((time() - path.getmtime(filename)) / 60))

@@ -1,6 +1,6 @@
 -make paths relative to script not terminal location
 
--make timeframe configurable
+-make timeframe configurable, this must include the x axis showing sensible values
 -add ability to force refresh
 
 - get charting software to display dates, or at least reduce the number of decimals
