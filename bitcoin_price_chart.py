@@ -7,7 +7,7 @@ from sys import argv
 
 
 def create_chart(scriptpath):
-    timerange = "30"
+    timerange = "60"
     interval = ""
     filename = scriptpath + timerange + "range_" + interval + "interval.json"
     if not path.isfile(filename) or (time() - path.getmtime(filename)) / 60 > 15:
@@ -28,11 +28,12 @@ def create_chart(scriptpath):
     fig = Figure()
     fig.width = 80
     fig.height = 10
-    fig.set_x_limits(min_=0, max_=len(weighted))
+    fig.x_axis_round = 2
+    fig.set_x_limits(min_=min(timestamps), max_=max(timestamps))
     fig.set_y_limits(min_=min(weighted), max_=max(weighted))
     fig.y_label = "USD/BTC"
     fig.color_mode = 'byte'
-    fig.plot([i for i in range(len(weighted))], weighted, lc=2, label="Bitcoin price")
+    fig.plot(timestamps, weighted, lc=2, label="Bitcoin price")
     print(fig.show(legend=True))
     print('Data provided by bitcoincharts [{0}]'.format("http://bitcoincharts.com/"))
     print('Last Updated {:.2} minutes ago'.format((time() - path.getmtime(filename)) / 60))
