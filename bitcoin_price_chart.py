@@ -25,7 +25,14 @@ def create_chart(scriptpath, args):
     zipped = list(zip(*response))
     timestamps = zipped[0]
     weighted = zipped[7]
-    print('Current price: ${:,.2f}'.format(weighted[-1]))
+    open = weighted[0]
+    close = weighted[-1]
+    change = (close - open) / open
+    if change > 0:
+        color = customColor(38, 106, 46)
+    else:
+        color = customColor(255, 43, 0)
+    print('Current price: ${:,.2f}, {}{:,.2%}\033[0m'.format(close, color, change))
     if args.log:
         weighted = [log(i) for i in weighted]
 
@@ -46,6 +53,9 @@ def create_chart(scriptpath, args):
     print(fig.show(legend=True))
     print('Data provided by bitcoincharts [{0}]'.format("http://bitcoincharts.com/"))
     print('Last Updated {:.2} minutes ago'.format((time() - path.getmtime(filename)) / 60))
+
+def customColor(r, g, b):
+    return '\033[38;2;' + str(r) + ";" + str(g) + ";" + str(b) + 'm'
 
 if __name__ == '__main__':
     filepath = path.dirname(argv[0])
