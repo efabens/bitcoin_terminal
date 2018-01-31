@@ -6,7 +6,8 @@ from json import dump, load
 from os import path
 from time import time
 from sys import argv
-from math import log
+from math import log, exp
+from datetime import datetime
 
 
 def create_chart(scriptpath, args):
@@ -36,7 +37,12 @@ def create_chart(scriptpath, args):
     fig.set_y_limits(min_=min(weighted), max_=max(weighted))
     fig.y_label = "USD/BTC"
     fig.color_mode = 'byte'
+    fig.y_axis_transform = lambda x: "${:,.2f}".format(x)
+    if args.log:
+        fig.y_axis_transform = lambda x: "${:,.2f}".format(exp(x))
+    fig.x_axis_transform = lambda x: '{:%m-%d-%y}'.format(datetime.fromtimestamp(x))
     fig.plot(timestamps, weighted, lc=2, label="Bitcoin price")
+
     print(fig.show(legend=True))
     print('Data provided by bitcoincharts [{0}]'.format("http://bitcoincharts.com/"))
     print('Last Updated {:.2} minutes ago'.format((time() - path.getmtime(filename)) / 60))

@@ -55,6 +55,14 @@ class Figure(object):
         with_colors: bool     Define, whether to use colors at all.
         background: multiple  Define the background color.
         x_label, y_label: str Define the X / Y axis label.
+        x_axis_transform: func A function that modifies the generated
+                          x_axis values. This can be any function that
+                          returns a string but is recommended to not be more
+                          than 10 characters and have no line breaks.
+        y_axis_transform: func A function that modifies the generated
+                          y_axis values. This can be any function that
+                          returns a string but is recommended to not be more
+                          than 10 characters and have no line breaks.
     '''
     _COLOR_SEQ = [
         {'names': 'white', 'rgb': (255, 255, 255), 'byte': 0X7},
@@ -80,8 +88,9 @@ class Figure(object):
         self.background = None
         self.x_label = 'X'
         self.y_label = 'Y'
-        self._x_axis_round = None
         self._plots = list()
+        self.x_axis_transform = lambda x: "{:.5f}".format(x)
+        self.y_axis_transform = lambda x: "{:.5f}".format(x)
 
     @property
     def width(self):
@@ -94,19 +103,6 @@ class Figure(object):
         if not (isinstance(value, int) and value > 0):
             raise ValueError('Invalid width: {}'.format(value))
         self._width = value
-
-    @property
-    def x_axis_round(self):
-        if self._x_axis_round is not None:
-            return self._x_axis_round
-        return 5
-
-    @x_axis_round.setter
-    def x_axis_round(self, value):
-        if not (isinstance(value, int) and value > 0):
-            raise ValueError('Invalid a_axis_round: {}'.format(value))
-        self._x_axis_round = value
-
 
     @property
     def height(self):
@@ -248,7 +244,10 @@ class Figure(object):
             canvas.line(0, ymin, 0, ymax)
 
         plt = canvas.plot(x_axis=True, x_label=self.x_label, y_axis=True,
-                          y_label=self.y_label, linesep=self.linesep, x_axis_round=self.x_axis_round)
+                          y_label=self.y_label, linesep=self.linesep,
+                          x_axis_transform=self.x_axis_transform,
+                          y_axis_transform=self.y_axis_transform
+                          )
 
         if legend:
             plt += '\n\nLegend:\n-------\n'
