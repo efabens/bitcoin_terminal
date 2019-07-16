@@ -1,6 +1,3 @@
-testing
-
-
 Each json response is a list of lists.
 
 Each element of the top level list represents a trading period as defined in the query params with value `i`.
