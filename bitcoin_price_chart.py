@@ -1,7 +1,8 @@
 from argparse import ArgumentParser
 
 from plotille import Figure
-from requests import get
+import requests
+import urllib3
 from json import dump, load
 from os import path
 from time import time
@@ -9,16 +10,18 @@ from sys import argv
 from math import log, exp
 from datetime import datetime
 
+ENDC = '\033[0m'
 
 def create_chart(scriptpath, args):
     timerange = str(args.dayrange)
     interval = ""
     filename = scriptpath + timerange + "range_" + interval + "interval.json"
+    urllib3.disable_warnings()
     if not path.isfile(filename) or (time() - path.getmtime(filename)) / 60 > 15 or args.force:
         url = "https://bitcoincharts.com/charts/chart.json?m=bitstampUSD&SubmitButton=Draw&r={0}&i={1}"\
             .format(timerange, interval)
         with open(filename, "w") as file:
-            dump(get(url).json(), file)
+            dump(requests.get(url, verify=False).json(), file)
     with open(filename, "r") as file:
         response = load(file)
 
@@ -29,10 +32,10 @@ def create_chart(scriptpath, args):
     closeprice = weighted[-1]
     change = (closeprice - openprice) / openprice
     if change > 0:
-        color = customColor(38, 106, 46)
+        color = custom_text_color((38, 200, 0))
     else:
-        color = customColor(255, 43, 0)
-    print('Current price: ${:,.2f}, {}{:,.2%}\033[0m'.format(closeprice, color, change))
+        color = custom_text_color((255, 43, 0))
+    print(f'Current price: ${closeprice:.2f}, {color}{change:.2%}{ENDC}')
     if args.log:
         weighted = [log(i) for i in weighted]
 
@@ -54,12 +57,16 @@ def create_chart(scriptpath, args):
     print('Data provided by bitcoincharts [{0}]'.format("http://bitcoincharts.com/"))
     print('Last Updated {:.2} minutes ago'.format((time() - path.getmtime(filename)) / 60))
 
-def customColor(r, g, b):
-    return '\033[38;2;' + str(r) + ";" + str(g) + ";" + str(b) + 'm'
+def custom_text_color(tup):
+    return (
+        '\033[38;2;' +
+        str(tup[0]) + ";" +
+        str(tup[1]) + ";" +
+        str(tup[2]) + 'm')
 
 if __name__ == '__main__':
     filepath = path.dirname(argv[0])
-    if len(filepath) is not 0:
+    if len(filepath) != 0:
         filepath = filepath + "/"
     parser = ArgumentParser(
         description='plots the historic price of bitcoin')
@@ -76,5 +83,3 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     create_chart(filepath, args)
-
-
